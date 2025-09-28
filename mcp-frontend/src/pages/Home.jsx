@@ -1,9 +1,14 @@
 import { Link } from 'react-router-dom'
 import ServerList from '../components/ServerList'
+import Spline from '@splinetool/react-spline/react'
 
 const Home = () => {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div>
+      <div className="h-full w-full">
+        <Spline scene="https://prod.spline.design/ZGx9q1YuEXk1eXYP/scene.splinecode" />
+      </div>
+      <div className="container mx-auto px-4 py-8">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
           Welcome to MCP Store
@@ -48,6 +53,7 @@ const Home = () => {
           <h3 className="text-xl font-semibold mb-2">Secure & Reliable</h3>
           <p className="text-gray-600">Enterprise-grade security and reliability</p>
         </div>
+      </div>
       </div>
     </div>
   )
