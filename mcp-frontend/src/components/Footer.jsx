@@ -4,21 +4,21 @@ const Footer = () => {
   const location = useLocation()
   
   return (
-    <footer className={`${location.pathname === '/info' ? 'bg-white text-gray-900 border-t border-gray-200' : 'bg-black text-white border-t border-gray-800'}`}>
+    <footer className={`${location.pathname === '/info' || location.pathname === '/contact' || location.pathname === '/contact' ? 'bg-white text-gray-900 border-t border-gray-200' : 'bg-black text-white border-t border-gray-800'}`}>
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center mb-4">
-              <span className={`text-2xl font-bold ${location.pathname === '/info' ? 'text-gray-900' : 'text-white'}`}>MCP Store</span>
+              <span className={`text-2xl font-bold ${location.pathname === '/info' || location.pathname === '/contact' || location.pathname === '/contact' ? 'text-gray-900' : 'text-white'}`}>MCP Store</span>
             </div>
-            <p className={`mb-6 max-w-md ${location.pathname === '/info' ? 'text-gray-600' : 'text-gray-300'}`}>
+            <p className={`mb-6 max-w-md ${location.pathname === '/info' || location.pathname === '/contact' || location.pathname === '/contact' ? 'text-gray-600' : 'text-gray-300'}`}>
               Your trusted platform for server management and monitoring. 
               We provide enterprise-grade solutions for businesses of all sizes.
             </p>
             <div className="flex space-x-4 mb-6">
               <a href="#" className={`transition-all duration-200 p-2 rounded-lg ${
-                location.pathname === '/info'
+                location.pathname === '/info' || location.pathname === '/contact'
                   ? 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
                   : 'text-gray-400 hover:text-white hover:bg-gray-800'
               }`}>
@@ -28,7 +28,7 @@ const Footer = () => {
                 </svg>
               </a>
               <a href="#" className={`transition-all duration-200 p-2 rounded-lg ${
-                location.pathname === '/info'
+                location.pathname === '/info' || location.pathname === '/contact'
                   ? 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
                   : 'text-gray-400 hover:text-white hover:bg-gray-800'
               }`}>
@@ -38,7 +38,7 @@ const Footer = () => {
                 </svg>
               </a>
               <a href="#" className={`transition-all duration-200 p-2 rounded-lg ${
-                location.pathname === '/info'
+                location.pathname === '/info' || location.pathname === '/contact'
                   ? 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
                   : 'text-gray-400 hover:text-white hover:bg-gray-800'
               }`}>
@@ -50,14 +50,14 @@ const Footer = () => {
             </div>
             <div className="flex gap-4">
               <button className={`px-6 py-3 rounded-xl transition-all duration-200 font-semibold ${
-                location.pathname === '/info'
+                location.pathname === '/info' || location.pathname === '/contact'
                   ? 'bg-gray-200 text-gray-800 hover:bg-gray-300'
                   : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}>
                 Get Started
               </button>
               <button className={`px-8 py-3 rounded-xl transition-all duration-200 font-semibold ${
-                location.pathname === '/info'
+                location.pathname === '/info' || location.pathname === '/contact'
                   ? 'bg-gradient-to-r from-gray-800 to-gray-900 text-white hover:from-gray-700 hover:to-gray-800 border border-gray-600/30'
                   : 'bg-gradient-to-r from-gray-800 to-gray-900 text-white hover:from-gray-700 hover:to-gray-800 border border-gray-600/30'
               }`}>
@@ -69,14 +69,14 @@ const Footer = () => {
           {/* Quick Links */}
           <div>
             <h3 className={`text-sm font-semibold tracking-wider uppercase mb-6 ${
-              location.pathname === '/info' ? 'text-gray-900' : 'text-white'
+              location.pathname === '/info' || location.pathname === '/contact' ? 'text-gray-900' : 'text-white'
             }`}>
               Quick Links
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link to="/" className={`transition-all duration-200 font-medium ${
-                  location.pathname === '/info'
+                  location.pathname === '/info' || location.pathname === '/contact'
                     ? 'text-gray-600 hover:text-gray-900'
                     : 'text-gray-400 hover:text-white'
                 }`}>
@@ -85,7 +85,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/info" className={`transition-all duration-200 font-medium ${
-                  location.pathname === '/info'
+                  location.pathname === '/info' || location.pathname === '/contact'
                     ? 'text-gray-600 hover:text-gray-900'
                     : 'text-gray-400 hover:text-white'
                 }`}>
@@ -94,7 +94,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/resources" className={`transition-all duration-200 font-medium ${
-                  location.pathname === '/info'
+                  location.pathname === '/info' || location.pathname === '/contact'
                     ? 'text-gray-600 hover:text-gray-900'
                     : 'text-gray-400 hover:text-white'
                 }`}>
@@ -103,7 +103,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/contact" className={`transition-all duration-200 font-medium ${
-                  location.pathname === '/info'
+                  location.pathname === '/info' || location.pathname === '/contact'
                     ? 'text-gray-600 hover:text-gray-900'
                     : 'text-gray-400 hover:text-white'
                 }`}>
@@ -116,14 +116,14 @@ const Footer = () => {
           {/* Support */}
           <div>
             <h3 className={`text-sm font-semibold tracking-wider uppercase mb-6 ${
-              location.pathname === '/info' ? 'text-gray-900' : 'text-white'
+              location.pathname === '/info' || location.pathname === '/contact' ? 'text-gray-900' : 'text-white'
             }`}>
               Support
             </h3>
             <ul className="space-y-3">
               <li>
                 <a href="#" className={`transition-all duration-200 font-medium ${
-                  location.pathname === '/info'
+                  location.pathname === '/info' || location.pathname === '/contact'
                     ? 'text-gray-600 hover:text-gray-900'
                     : 'text-gray-400 hover:text-white'
                 }`}>
@@ -132,7 +132,7 @@ const Footer = () => {
               </li>
               <li>
                 <a href="#" className={`transition-all duration-200 font-medium ${
-                  location.pathname === '/info'
+                  location.pathname === '/info' || location.pathname === '/contact'
                     ? 'text-gray-600 hover:text-gray-900'
                     : 'text-gray-400 hover:text-white'
                 }`}>
@@ -141,7 +141,7 @@ const Footer = () => {
               </li>
               <li>
                 <a href="#" className={`transition-all duration-200 font-medium ${
-                  location.pathname === '/info'
+                  location.pathname === '/info' || location.pathname === '/contact'
                     ? 'text-gray-600 hover:text-gray-900'
                     : 'text-gray-400 hover:text-white'
                 }`}>
@@ -150,7 +150,7 @@ const Footer = () => {
               </li>
               <li>
                 <a href="#" className={`transition-all duration-200 font-medium ${
-                  location.pathname === '/info'
+                  location.pathname === '/info' || location.pathname === '/contact'
                     ? 'text-gray-600 hover:text-gray-900'
                     : 'text-gray-400 hover:text-white'
                 }`}>
@@ -162,24 +162,24 @@ const Footer = () => {
         </div>
 
         <div className={`mt-12 pt-8 border-t ${
-          location.pathname === '/info' ? 'border-gray-200' : 'border-gray-800'
+          location.pathname === '/info' || location.pathname === '/contact' ? 'border-gray-200' : 'border-gray-800'
         }`}>
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className={`text-sm font-medium ${
-              location.pathname === '/info' ? 'text-gray-600' : 'text-gray-400'
+              location.pathname === '/info' || location.pathname === '/contact' ? 'text-gray-600' : 'text-gray-400'
             }`}>
               © 2025 MCP Store. All rights reserved.
             </p>
             <div className="mt-4 md:mt-0 flex space-x-6">
               <a href="#" className={`text-sm transition-all duration-200 font-medium ${
-                location.pathname === '/info'
+                location.pathname === '/info' || location.pathname === '/contact'
                   ? 'text-gray-600 hover:text-gray-900'
                   : 'text-gray-400 hover:text-white'
               }`}>
                 Privacy Policy
               </a>
               <a href="#" className={`text-sm transition-all duration-200 font-medium ${
-                location.pathname === '/info'
+                location.pathname === '/info' || location.pathname === '/contact'
                   ? 'text-gray-600 hover:text-gray-900'
                   : 'text-gray-400 hover:text-white'
               }`}>
