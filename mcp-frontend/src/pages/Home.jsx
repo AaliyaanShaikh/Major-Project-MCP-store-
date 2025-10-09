@@ -1,11 +1,124 @@
-import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import ServerList from '../components/ServerList'
+import Spline from '@splinetool/react-spline/react'
+import { useEffect, useRef, useState } from 'react'
+
+// Custom hook for counting animation
+const useCountUp = (end, duration = 2000, start = 0) => {
+  const [count, setCount] = useState(start)
+  const [isVisible, setIsVisible] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isVisible) {
+          setIsVisible(true)
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    if (ref.current) {
+      observer.observe(ref.current)
+    }
+
+    return () => observer.disconnect()
+  }, [isVisible])
+// Counting animation for stats
+  useEffect(() => {
+    if (!isVisible) return
+
+    let startTime
+    const animate = (currentTime) => {
+      if (!startTime) startTime = currentTime
+      const progress = Math.min((currentTime - startTime) / duration, 1)
+      
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4)
+      const currentCount = Math.floor(easeOutQuart * (end - start) + start)
+      
+      setCount(currentCount)
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate)
+      }
+    }
+
+    requestAnimationFrame(animate)
+  }, [isVisible, end, duration, start])
+
+  return { count, ref }
+}
 
 const Home = () => {
+  const [isVisible, setIsVisible] = useState(false)
+  const welcomeRef = useRef(null)
+  const searchContainerRef = useRef(null)
+  
+  // Search functionality state
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [isSearching, setIsSearching] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const [isSearchFocused, setIsSearchFocused] = useState(false)
+  
+  // Counting animations for stats
+  const toolsCount = useCountUp(150, 2500)
+  const uptimeCount = useCountUp(99.9, 2000, 0)
+  const supportCount = useCountUp(24, 1500, 0)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    if (welcomeRef.current) {
+      observer.observe(welcomeRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
+
+  // Handle clicking outside search container to close suggestions
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setShowSuggestions(false)
+        setIsSearchFocused(false)
+      }
+    }
+
+    // Add event listener when suggestions are shown or search is focused
+    if (showSuggestions || isSearchFocused) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    // Cleanup event listener
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showSuggestions, isSearchFocused])
+
+  // Prevent body scrolling when in focused mode
+  useEffect(() => {
+    if (isSearchFocused) {
+      // Prevent scrolling
+      document.body.style.overflow = 'hidden'
+    } else {
+      // Restore scrolling
+      document.body.style.overflow = 'unset'
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isSearchFocused])
 
   // Sample MCP tools data - in a real app, this would come from an API
   const mcpTools = [
@@ -58,9 +171,177 @@ const Home = () => {
     }
   }
 
+  // Handle entering focused search mode
+  const handleSearchFocus = () => {
+    setIsSearchFocused(true)
+    setShowSuggestions(true)
+  }
+
+  // Handle exiting focused search mode
+  const handleSearchBlur = () => {
+    setIsSearchFocused(false)
+    setShowSuggestions(false)
+  }
+
   // Main Content***/
   return (
     <div className="min-h-full bg-black">
+      {/* Focused Search Overlay */}
+      {isSearchFocused && (
+        <div className="fixed inset-0 bg-black z-40 flex items-center justify-center overflow-hidden">
+          <div className="w-full max-w-4xl mx-auto px-4">
+            {/* Exit Arrow */}
+            <button
+              onClick={handleSearchBlur}
+              className="absolute top-8 right-8 w-12 h-12 bg-gray-800/50 hover:bg-gray-700/50 rounded-full flex items-center justify-center transition-all duration-200 z-50"
+            >
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            
+            {/* Focused Search Interface */}
+            <div className="text-center">
+              <h1 className="text-5xl font-bold text-gray-400 mb-4 mt-32">
+                Ready when you are.
+              </h1>
+              <p className="text-xl text-gray-600 mb-8">Directory of awesome MCP servers and clients to connect AI agents with your favorite tools.</p>
+              
+              {/* Search Bar Container */}
+              <div ref={searchContainerRef} className="w-full max-w-4xl mx-auto relative">
+                <form onSubmit={handleSubmit} className="relative">
+                  <div className="relative">
+                    {/* Search Input */}
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={handleInputChange}
+                      placeholder="Ask anything"
+                      className="w-full px-6 py-4 pl-16 pr-20 bg-gray-800/50 border border-gray-700/50 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600/50 focus:border-transparent backdrop-blur-sm text-lg"
+                    />
+                    
+                    {/* Plus Icon */}
+                    <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                      <button
+                        type="button"
+                        className="w-8 h-8 bg-gray-700/50 rounded-full flex items-center justify-center hover:bg-gray-600/50 transition-colors"
+                      >
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    {/* Right Icons */}
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center gap-3">
+                      {/* Microphone Icon */}
+                      <button
+                        type="button"
+                        className="w-8 h-8 flex items-center justify-center hover:bg-gray-700/50 rounded-full transition-colors"
+                      >
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                        </svg>
+                      </button>
+
+                      {/* Sound Waves Icon */}
+                      <div className="w-8 h-8 flex items-center justify-center">
+                        <div className="flex items-center gap-1">
+                          <div className="w-1 h-3 bg-white rounded-full animate-pulse"></div>
+                          <div className="w-1 h-4 bg-white rounded-full animate-pulse" style={{animationDelay: '0.1s'}}></div>
+                          <div className="w-1 h-2 bg-white rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                          <div className="w-1 h-5 bg-white rounded-full animate-pulse" style={{animationDelay: '0.3s'}}></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+
+                {/* Search Suggestions Dropdown */}
+                {showSuggestions && searchResults.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-gray-800/90 backdrop-blur-sm border border-gray-700/50 rounded-xl shadow-2xl z-50 max-h-96 overflow-y-auto">
+                    {searchResults.map((tool) => (
+                      <div
+                        key={tool.id}
+                        className="p-4 hover:bg-gray-700/50 cursor-pointer border-b border-gray-700/30 last:border-b-0 transition-colors"
+                        onClick={() => {
+                          setSearchQuery(tool.name)
+                          setShowSuggestions(false)
+                        }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <h3 className="text-white font-medium mb-1">{tool.name}</h3>
+                            <p className="text-gray-400 text-sm">{tool.description}</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <span className="px-2 py-1 bg-gray-700/50 text-gray-300 text-xs rounded-full">
+                                {tool.category}
+                              </span>
+                              <span className={`px-2 py-1 text-xs rounded-full ${
+                                tool.status === 'online' ? 'bg-green-500/20 text-green-400' :
+                                tool.status === 'maintenance' ? 'bg-yellow-500/20 text-yellow-400' :
+                                'bg-red-500/20 text-red-400'
+                              }`}>
+                                {tool.status}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-gray-400 text-xs">{tool.uptime} uptime</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* No Results Message */}
+                {showSuggestions && searchQuery && searchResults.length === 0 && !isSearching && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-gray-800/90 backdrop-blur-sm border border-gray-700/50 rounded-xl shadow-2xl z-50 p-4">
+                    <div className="text-center text-gray-400">
+                      <p>No MCP tools found for "{searchQuery}"</p>
+                      <p className="text-sm mt-1">Try searching for different keywords</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Loading State */}
+                {isSearching && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-gray-800/90 backdrop-blur-sm border border-gray-700/50 rounded-xl shadow-2xl z-50 p-4">
+                    <div className="flex items-center justify-center text-gray-400">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                      Searching...
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Quick Access Categories */}
+              <div className="mt-12 w-full max-w-4xl mx-auto mb-16">
+                <div className="text-center mb-6">
+                  <p className="text-gray-400 text-sm">Popular categories</p>
+                </div>
+                <div className="flex flex-wrap justify-center gap-3">
+                  {['Development', 'Analytics', 'AI', 'Security', 'Storage', 'Communication'].map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => {
+                        setSearchQuery(category)
+                        handleSearch(category)
+                        setShowSuggestions(true)
+                      }}
+                      className="px-4 py-2 bg-gray-800/50 text-gray-300 rounded-full text-sm hover:bg-gray-700/50 transition-colors border border-gray-700/30"
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Spline Scene - Standalone */}
       <div className="h-screen w-full">
         <Spline scene="https://prod.spline.design/ZGx9q1YuEXk1eXYP/scene.splinecode" />
@@ -78,131 +359,145 @@ const Home = () => {
                 : 'opacity-0 translate-y-10'
             }`}
           >
-            <h1 className="text-5xl font-bold text-gray-400 mb-4">Welcome to MCP Store</h1>
+            <h1 className="text-5xl font-bold text-gray-400 mb-4 mt-32">Ready when you are.</h1>
             <p className="text-xl text-gray-600 mb-8">Directory of awesome MCP servers and clients to connect AI agents with your favorite tools.</p>
             
-            {/* Connect AI Agents Section */}
-            <div className="relative mb-16">
-              {/* Premium Dark Container */}
-              <div className="relative w-full bg-gradient-to-br from-black via-gray-900/80 to-black rounded-3xl border border-gray-800/50 overflow-hidden shadow-2xl backdrop-blur-xl">
-                {/* Sophisticated Background Effects */}
-                <div className="absolute inset-0">
-                  {/* Subtle Grid Pattern */}
-                  <div className="absolute inset-0 opacity-5" style={{
-                    backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0)`,
-                    backgroundSize: '20px 20px'
-                  }}></div>
-                  
-                  {/* Animated Orbs */}
-                  <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-gradient-to-r from-gray-800/20 to-gray-700/20 rounded-full blur-3xl animate-pulse"></div>
-                  <div className="absolute bottom-1/3 left-1/3 w-48 h-48 bg-gradient-to-r from-gray-700/20 to-gray-600/20 rounded-full blur-2xl animate-pulse" style={{animationDelay: '3s'}}></div>
-                  
-                  {/* Subtle Light Rays */}
-                  <div className="absolute top-0 left-1/2 w-px h-full bg-gradient-to-b from-transparent via-gray-600/20 to-transparent"></div>
-                  <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-600/20 to-transparent"></div>
-                </div>
-                
-                {/* Content Container */}
-                <div className="relative z-10 p-8 md:p-16">
-                  <div className="grid lg:grid-cols-2 gap-12 items-center">
-                    {/* Left Side - Premium Content */}
-                    <div className="text-center lg:text-left">
-                      {/* Status Badge */}
-                      <div className="inline-flex items-center gap-3 mb-8 px-6 py-3 bg-gradient-to-r from-gray-800/50 to-gray-700/50 rounded-full border border-gray-600/30 backdrop-blur-sm">
-                        <div className="relative">
-                          <div className="w-3 h-3 bg-gray-400 rounded-full animate-pulse"></div>
-                          <div className="absolute inset-0 w-3 h-3 bg-gray-400 rounded-full animate-ping opacity-30"></div>
+            {/* Search Interface */}
+            <div className="mb-16">
+              {/* Search Bar Container */}
+              <div ref={searchContainerRef} className="w-full max-w-4xl mx-auto relative cursor-pointer" onClick={handleSearchFocus}>
+                <form onSubmit={handleSubmit} className="relative">
+                  <div className="relative">
+                    {/* Search Input */}
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={handleInputChange}
+                      placeholder="Ask anything"
+                      className="w-full px-6 py-4 pl-16 pr-20 bg-gray-800/50 border border-gray-700/50 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600/50 focus:border-transparent backdrop-blur-sm text-lg"
+                    />
+                    
+                    {/* Plus Icon */}
+                    <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                      <button
+                        type="button"
+                        className="w-8 h-8 bg-gray-700/50 rounded-full flex items-center justify-center hover:bg-gray-600/50 transition-colors"
+                      >
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    {/* Right Icons */}
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center gap-3">
+                      {/* Microphone Icon */}
+                      <button
+                        type="button"
+                        className="w-8 h-8 flex items-center justify-center hover:bg-gray-700/50 rounded-full transition-colors"
+                      >
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                        </svg>
+                      </button>
+
+                      {/* Sound Waves Icon */}
+                      <div className="w-8 h-8 flex items-center justify-center">
+                        <div className="flex items-center gap-1">
+                          <div className="w-1 h-3 bg-white rounded-full animate-pulse"></div>
+                          <div className="w-1 h-4 bg-white rounded-full animate-pulse" style={{animationDelay: '0.1s'}}></div>
+                          <div className="w-1 h-2 bg-white rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                          <div className="w-1 h-5 bg-white rounded-full animate-pulse" style={{animationDelay: '0.3s'}}></div>
                         </div>
-                        <span className="text-gray-300 text-sm font-bold tracking-wider">SYSTEM ACTIVE</span>
-                      </div>
-                      
-                      {/* Main Title */}
-                      <h3 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
-                        Connect AI Agents
-                      </h3>
-                      
-                      {/* Description */}
-                      <p className="text-xl text-gray-400 mb-8 leading-relaxed max-w-lg">
-                        Seamlessly integrate AI agents with 150+ powerful tools through our advanced MCP (Model Context Protocol) infrastructure.
-                      </p>
-                      
-                      {/* Feature Pills - Dark Theme */}
-                      <div className="flex flex-wrap gap-4 mb-8">
-                        <span className="px-4 py-2 bg-gray-800/50 text-gray-300 rounded-full text-sm font-semibold border border-gray-600/30 backdrop-blur-sm hover:bg-gray-700/50 transition-all duration-300">
-                          Real-time Sync
-                        </span>
-                        <span className="px-4 py-2 bg-gray-800/50 text-gray-300 rounded-full text-sm font-semibold border border-gray-600/30 backdrop-blur-sm hover:bg-gray-700/50 transition-all duration-300">
-                          Secure API
-                        </span>
-                        <span className="px-4 py-2 bg-gray-800/50 text-gray-300 rounded-full text-sm font-semibold border border-gray-600/30 backdrop-blur-sm hover:bg-gray-700/50 transition-all duration-300">
-                          Auto-Scale
-                        </span>
                       </div>
                     </div>
-                    
-                    {/* Right Side - Sophisticated Visual */}
-                    <div className="relative">
-                      {/* Central Dark Hub */}
-                      <div className="relative mx-auto w-56 h-56 flex items-center justify-center">
-                        {/* Outer Dark Rings */}
-                        <div className="absolute inset-0 border-2 border-gray-700/40 rounded-full animate-spin-slow"></div>
-                        <div className="absolute inset-4 border-2 border-gray-600/30 rounded-full animate-spin-reverse"></div>
-                        <div className="absolute inset-8 border-2 border-gray-500/20 rounded-full animate-spin-slow"></div>
-                        
-                        {/* Central Dark Hub */}
-                        <div className="relative z-10 w-36 h-36 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 rounded-full flex items-center justify-center shadow-2xl border border-gray-600/30">
-                          <div className="w-24 h-24 bg-gray-900/50 rounded-full flex items-center justify-center backdrop-blur-sm border border-gray-700/50">
-                            <span className="text-5xl filter drop-shadow-lg">🔗</span>
+                  </div>
+                </form>
+
+                {/* Search Suggestions Dropdown */}
+                {showSuggestions && searchResults.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-gray-800/90 backdrop-blur-sm border border-gray-700/50 rounded-xl shadow-2xl z-50 max-h-96 overflow-y-auto">
+                    {searchResults.map((tool) => (
+                      <div
+                        key={tool.id}
+                        className="p-4 hover:bg-gray-700/50 cursor-pointer border-b border-gray-700/30 last:border-b-0 transition-colors"
+                        onClick={() => {
+                          setSearchQuery(tool.name)
+                          setShowSuggestions(false)
+                        }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <h3 className="text-white font-medium mb-1">{tool.name}</h3>
+                            <p className="text-gray-400 text-sm">{tool.description}</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <span className="px-2 py-1 bg-gray-700/50 text-gray-300 text-xs rounded-full">
+                                {tool.category}
+                              </span>
+                              <span className={`px-2 py-1 text-xs rounded-full ${
+                                tool.status === 'online' ? 'bg-green-500/20 text-green-400' :
+                                tool.status === 'maintenance' ? 'bg-yellow-500/20 text-yellow-400' :
+                                'bg-red-500/20 text-red-400'
+                              }`}>
+                                {tool.status}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-gray-400 text-xs">{tool.uptime} uptime</div>
                           </div>
                         </div>
-                        
-                        {/* Floating Dark Nodes */}
-                        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-3 w-8 h-8 bg-gray-600 rounded-full animate-bounce shadow-xl border border-gray-500/30"></div>
-                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-3 w-8 h-8 bg-gray-600 rounded-full animate-bounce shadow-xl border border-gray-500/30" style={{animationDelay: '0.5s'}}></div>
-                        <div className="absolute left-0 top-1/2 transform -translate-x-3 -translate-y-1/2 w-8 h-8 bg-gray-600 rounded-full animate-bounce shadow-xl border border-gray-500/30" style={{animationDelay: '1s'}}></div>
-                        <div className="absolute right-0 top-1/2 transform translate-x-3 -translate-y-1/2 w-8 h-8 bg-gray-600 rounded-full animate-bounce shadow-xl border border-gray-500/30" style={{animationDelay: '1.5s'}}></div>
                       </div>
-                      
-                      {/* Dark Stats Display */}
-                      <div className="mt-12 grid grid-cols-3 gap-6">
-                        <div className="text-center p-4 bg-gray-900/50 rounded-xl border border-gray-700/30 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300">
-                          <div className="text-2xl font-bold text-white">150+</div>
-                          <div className="text-xs text-gray-500 font-semibold">Tools</div>
-                        </div>
-                        <div className="text-center p-4 bg-gray-900/50 rounded-xl border border-gray-700/30 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300">
-                          <div className="text-2xl font-bold text-white">99.9%</div>
-                          <div className="text-xs text-gray-500 font-semibold">Uptime</div>
-                        </div>
-                        <div className="text-center p-4 bg-gray-900/50 rounded-xl border border-gray-700/30 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300">
-                          <div className="text-2xl font-bold text-white">24/7</div>
-                          <div className="text-xs text-gray-500 font-semibold">Support</div>
-                        </div>
-                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* No Results Message */}
+                {showSuggestions && searchQuery && searchResults.length === 0 && !isSearching && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-gray-800/90 backdrop-blur-sm border border-gray-700/50 rounded-xl shadow-2xl z-50 p-4">
+                    <div className="text-center text-gray-400">
+                      <p>No MCP tools found for "{searchQuery}"</p>
+                      <p className="text-sm mt-1">Try searching for different keywords</p>
                     </div>
                   </div>
-                  
-                  {/* Bottom Dark Info Bar */}
-                  <div className="mt-12 pt-8 border-t border-gray-800/50">
-                    <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-gray-500">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-gray-500 rounded-full animate-pulse"></div>
-                        <span className="font-semibold">Enterprise Ready</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-gray-500 rounded-full animate-pulse"></div>
-                        <span className="font-semibold">Open Source</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-gray-500 rounded-full animate-pulse"></div>
-                        <span className="font-semibold">Community Driven</span>
-                      </div>
+                )}
+
+                {/* Loading State */}
+                {isSearching && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-gray-800/90 backdrop-blur-sm border border-gray-700/50 rounded-xl shadow-2xl z-50 p-4">
+                    <div className="flex items-center justify-center text-gray-400">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+                      Searching...
                     </div>
                   </div>
+                )}
+              </div>
+              
+              {/* Quick Access Categories */}
+              <div className="mt-12 w-full max-w-4xl mx-auto mb-16">
+                <div className="text-center mb-6">
+                  <p className="text-gray-400 text-sm">Popular categories</p>
+                </div>
+                <div className="flex flex-wrap justify-center gap-3">
+                  {['Development', 'Analytics', 'AI', 'Security', 'Storage', 'Communication'].map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => {
+                        setSearchQuery(category)
+                        handleSearch(category)
+                        setShowSuggestions(true)
+                      }}
+                      className="px-4 py-2 bg-gray-800/50 text-gray-300 rounded-full text-sm hover:bg-gray-700/50 transition-colors border border-gray-700/30"
+                    >
+                      {category}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
             
             {/* Get Started and Learn More Buttons */}
+            {/*
             <div className="flex gap-4 justify-center mb-22">
               <Link 
                 to="/sign" 
@@ -217,10 +512,11 @@ const Home = () => {
                 Learn More
               </Link>
             </div>
+            */}
           </div>
 
           {/* MCP Tools Store Section */}
-          <div className="text-center mb-16 mt-20">
+          <div className="text-center mb-16 mt-48">
             <div className="inline-flex items-center gap-2 mb-4">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <span className="text-green-400 text-sm font-medium">LIVE</span>
