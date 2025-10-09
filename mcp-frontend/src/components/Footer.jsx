@@ -49,20 +49,20 @@ const Footer = () => {
               </a>
             </div>
             <div className="flex gap-4">
-              <button className={`px-6 py-3 rounded-xl transition-all duration-200 font-semibold ${
+              <Link to="/sign" className={`px-6 py-3 rounded-xl transition-all duration-200 font-semibold ${
                 location.pathname === '/info' || location.pathname === '/contact'
                   ? 'bg-gray-200 text-gray-800 hover:bg-gray-300'
                   : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}>
                 Get Started
-              </button>
-              <button className={`px-8 py-3 rounded-xl transition-all duration-200 font-semibold ${
+              </Link>
+              <Link to="/contact" className={`px-8 py-3 rounded-xl transition-all duration-200 font-semibold ${
                 location.pathname === '/info' || location.pathname === '/contact'
                   ? 'bg-gradient-to-r from-gray-800 to-gray-900 text-white hover:from-gray-700 hover:to-gray-800 border border-gray-600/30'
                   : 'bg-gradient-to-r from-gray-800 to-gray-900 text-white hover:from-gray-700 hover:to-gray-800 border border-gray-600/30'
               }`}>
                 Contact Sales
-              </button>
+              </Link>
             </div>
           </div>
 
