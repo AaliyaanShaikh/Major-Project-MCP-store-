@@ -61,6 +61,8 @@ const Home = () => {
   const [isSearching, setIsSearching] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [isSearchFocused, setIsSearchFocused] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isZooming, setIsZooming] = useState(false)
   
   // Counting animations for stats
   const toolsCount = useCountUp(150, 2500)
@@ -173,21 +175,59 @@ const Home = () => {
 
   // Handle entering focused search mode
   const handleSearchFocus = () => {
-    setIsSearchFocused(true)
-    setShowSuggestions(true)
+    setIsLoading(true)
+    setTimeout(() => {
+      setIsLoading(false)
+      setIsZooming(true)
+      setTimeout(() => {
+        setIsSearchFocused(true)
+        setShowSuggestions(true)
+        setIsZooming(false)
+      }, 500) // 500ms total zoom effect (0.2s + 0.1s delay + 0.4s)
+    }, 300) // 300ms loading animation
   }
 
   // Handle exiting focused search mode
   const handleSearchBlur = () => {
     setIsSearchFocused(false)
     setShowSuggestions(false)
+    setIsLoading(false)
+    setIsZooming(false)
   }
 
   // Main Content***/
   return (
-    <div className="min-h-full bg-black">
+    <>
+      <style jsx>{`
+        @keyframes quickZoom {
+          0% {
+            transform: scale(0.1);
+            opacity: 0;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+        
+        @keyframes fullScreenZoom {
+          0% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(15);
+            opacity: 0.8;
+          }
+          100% {
+            transform: scale(30);
+            opacity: 0;
+          }
+        }
+      `}</style>
+      <div className="min-h-full bg-black">
       {/* Focused Search Overlay */}
-      {isSearchFocused && (
+      {(isSearchFocused || isLoading || isZooming) && (
         <div className="fixed inset-0 bg-black z-40 flex items-center justify-center overflow-hidden">
           <div className="w-full max-w-4xl mx-auto px-4">
             {/* Exit Arrow */}
@@ -200,8 +240,41 @@ const Home = () => {
               </svg>
             </button>
             
+            {/* Loading Animation */}
+            {isLoading && (
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white mx-auto mb-4"></div>
+                <p className="text-white text-lg animate-pulse">Loading...</p>
+              </div>
+            )}
+            
+            {/* Zooming Animation */}
+            {isZooming && (
+              <div className="text-center relative">
+                {/* Quick Zoom Effect */}
+                <div 
+                  className="rounded-full h-16 w-16 border-b-2 border-white mx-auto mb-4"
+                  style={{
+                    animation: 'quickZoom 0.2s ease-out forwards'
+                  }}
+                ></div>
+                <p className="text-white text-lg">Loading...</p>
+                
+                {/* Full Screen Zoom Effect */}
+                <div 
+                  className="absolute inset-0 flex items-center justify-center"
+                  style={{
+                    animation: 'fullScreenZoom 0.4s ease-out 0.1s forwards'
+                  }}
+                >
+                  <div className="rounded-full h-16 w-16 border-b-2 border-white"></div>
+                </div>
+              </div>
+            )}
+            
             {/* Focused Search Interface */}
-            <div className="text-center relative">
+            {isSearchFocused && (
+            <div className="text-center relative animate-in fade-in zoom-in-95 duration-300 ease-out">
               {/* Spline Background */}
               <div className="fixed inset-0 w-screen h-screen opacity-30 -z-10">
                 <Spline
@@ -346,6 +419,7 @@ const Home = () => {
                 </div>
               </div>
             </div>
+            )}
           </div>
         </div>
       )}
@@ -741,6 +815,7 @@ const Home = () => {
         </div>
       </div>
     </div>
+    </>
   )
 }
 
