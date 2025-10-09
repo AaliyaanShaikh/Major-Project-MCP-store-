@@ -1,80 +1,62 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import ServerList from '../components/ServerList'
-import Spline from '@splinetool/react-spline/react'
-import { useEffect, useRef, useState } from 'react'
-
-// Custom hook for counting animation
-const useCountUp = (end, duration = 2000, start = 0) => {
-  const [count, setCount] = useState(start)
-  const [isVisible, setIsVisible] = useState(false)
-  const ref = useRef(null)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !isVisible) {
-          setIsVisible(true)
-        }
-      },
-      { threshold: 0.1 }
-    )
-
-    if (ref.current) {
-      observer.observe(ref.current)
-    }
-
-    return () => observer.disconnect()
-  }, [isVisible])
-// Counting animation for stats
-  useEffect(() => {
-    if (!isVisible) return
-
-    let startTime
-    const animate = (currentTime) => {
-      if (!startTime) startTime = currentTime
-      const progress = Math.min((currentTime - startTime) / duration, 1)
-      
-      const easeOutQuart = 1 - Math.pow(1 - progress, 4)
-      const currentCount = Math.floor(easeOutQuart * (end - start) + start)
-      
-      setCount(currentCount)
-      
-      if (progress < 1) {
-        requestAnimationFrame(animate)
-      }
-    }
-
-    requestAnimationFrame(animate)
-  }, [isVisible, end, duration, start])
-
-  return { count, ref }
-}
 
 const Home = () => {
-  const [isVisible, setIsVisible] = useState(false)
-  const welcomeRef = useRef(null)
-  
-  // Counting animations for stats
-  const toolsCount = useCountUp(150, 2500)
-  const uptimeCount = useCountUp(99.9, 2000, 0)
-  const supportCount = useCountUp(24, 1500, 0)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [showSuggestions, setShowSuggestions] = useState(false)
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-        }
-      },
-      { threshold: 0.1 }
-    )
+  // Sample MCP tools data - in a real app, this would come from an API
+  const mcpTools = [
+    { id: 1, name: 'GitHub Integration', description: 'Connect AI agents with GitHub repositories, issues, and pull requests', category: 'Development', status: 'online', uptime: '99.8%' },
+    { id: 2, name: 'Data Analytics', description: 'Advanced data processing and visualization tools for AI agents', category: 'Analytics', status: 'online', uptime: '99.9%' },
+    { id: 3, name: 'AI Assistant', description: 'Intelligent task automation and workflow optimization', category: 'AI', status: 'maintenance', uptime: '98.5%' },
+    { id: 4, name: 'Security Suite', description: 'Advanced security monitoring and threat detection', category: 'Security', status: 'offline', uptime: '95.2%' },
+    { id: 5, name: 'Cloud Storage', description: 'Seamless file management and cloud integration', category: 'Storage', status: 'online', uptime: '99.7%' },
+    { id: 6, name: 'Communication', description: 'Multi-channel messaging and notification systems', category: 'Communication', status: 'online', uptime: '99.6%' },
+    { id: 7, name: 'Database Manager', description: 'Connect to various databases and manage data operations', category: 'Database', status: 'online', uptime: '99.5%' },
+    { id: 8, name: 'API Gateway', description: 'Centralized API management and routing for AI agents', category: 'API', status: 'online', uptime: '99.4%' },
+    { id: 9, name: 'File Processor', description: 'Process and transform files in various formats', category: 'File Processing', status: 'online', uptime: '99.3%' },
+    { id: 10, name: 'Email Service', description: 'Send and receive emails through AI agents', category: 'Communication', status: 'online', uptime: '99.2%' }
+  ]
 
-    if (welcomeRef.current) {
-      observer.observe(welcomeRef.current)
+  // Search functionality
+  const handleSearch = (query) => {
+    setSearchQuery(query)
+    setIsSearching(true)
+    
+    // Simulate search delay
+    setTimeout(() => {
+      if (query.trim() === '') {
+        setSearchResults([])
+      } else {
+        const filtered = mcpTools.filter(tool => 
+          tool.name.toLowerCase().includes(query.toLowerCase()) ||
+          tool.description.toLowerCase().includes(query.toLowerCase()) ||
+          tool.category.toLowerCase().includes(query.toLowerCase())
+        )
+        setSearchResults(filtered)
+      }
+      setIsSearching(false)
+    }, 300)
+  }
+
+  // Handle search input
+  const handleInputChange = (e) => {
+    const value = e.target.value
+    handleSearch(value)
+    setShowSuggestions(value.length > 0)
+  }
+
+  // Handle search submission
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      // In a real app, this would trigger a more comprehensive search
+      console.log('Searching for:', searchQuery)
     }
-
-    return () => observer.disconnect()
-  }, [])
+  }
 
   // Main Content***/
   return (
