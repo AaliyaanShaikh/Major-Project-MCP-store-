@@ -788,9 +788,9 @@ const Home = () => {
 
             {/* View All Tools Button */}
             <div className="text-center mt-12">
-              <button className="px-8 py-3 bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-xl hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl border border-gray-600/30">
+              <Link to="/resources" className="inline-block px-8 py-3 bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-xl hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl border border-gray-600/30">
                 View All 150+ Tools
-              </button>
+              </Link>
             </div>
           </div>
 
