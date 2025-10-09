@@ -201,14 +201,22 @@ const Home = () => {
             </button>
             
             {/* Focused Search Interface */}
-            <div className="text-center">
-              <h1 className="text-5xl font-bold text-gray-400 mb-4 mt-32">
-                Ready when you are.
-              </h1>
-              <p className="text-xl text-gray-600 mb-8">Directory of awesome MCP servers and clients to connect AI agents with your favorite tools.</p>
+            <div className="text-center relative">
+              {/* Spline Background */}
+              <div className="fixed inset-0 w-screen h-screen opacity-30 -z-10">
+                <Spline
+                  scene="https://prod.spline.design/ftkHqvGz6SXmWXdq/scene.splinecode" 
+                />
+              </div>
+              <div className="relative z-10">
+                <h1 className="text-5xl font-bold text-gray-400 mb-4 mt-38">
+                  Ready when you are.
+                </h1>
+                <p className="text-xl text-gray-600 mb-8">Directory of awesome MCP servers and clients to connect AI agents with your favorite tools.</p>
+              </div>
               
               {/* Search Bar Container */}
-              <div ref={searchContainerRef} className="w-full max-w-4xl mx-auto relative">
+              <div ref={searchContainerRef} className="w-full max-w-4xl mx-auto relative z-10">
                 <form onSubmit={handleSubmit} className="relative">
                   <div className="relative">
                     {/* Search Input */}
@@ -317,7 +325,7 @@ const Home = () => {
               </div>
               
               {/* Quick Access Categories */}
-              <div className="mt-12 w-full max-w-4xl mx-auto mb-16">
+              <div className="mt-12 w-full max-w-4xl mx-auto mb-16 relative z-10">
                 <div className="text-center mb-6">
                   <p className="text-gray-400 text-sm">Popular categories</p>
                 </div>
@@ -474,7 +482,7 @@ const Home = () => {
               </div>
               
               {/* Quick Access Categories */}
-              <div className="mt-12 w-full max-w-4xl mx-auto mb-16">
+              <div className="mt-12 w-full max-w-4xl mx-auto mb-16 relative z-10">
                 <div className="text-center mb-6">
                   <p className="text-gray-400 text-sm">Popular categories</p>
                 </div>
