@@ -63,6 +63,8 @@ const Home = () => {
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isZooming, setIsZooming] = useState(false)
+  const [isListening, setIsListening] = useState(false)
+  const [speechSupported, setSpeechSupported] = useState(false)
   
   // Counting animations for stats
   const toolsCount = useCountUp(150, 2500)
@@ -178,12 +180,8 @@ const Home = () => {
     setIsLoading(true)
     setTimeout(() => {
       setIsLoading(false)
-      setIsZooming(true)
-      setTimeout(() => {
-        setIsSearchFocused(true)
-        setShowSuggestions(true)
-        setIsZooming(false)
-      }, 500) // 500ms total zoom effect (0.2s + 0.1s delay + 0.4s)
+      setIsSearchFocused(true)
+      setShowSuggestions(true)
     }, 300) // 300ms loading animation
   }
 
@@ -192,42 +190,60 @@ const Home = () => {
     setIsSearchFocused(false)
     setShowSuggestions(false)
     setIsLoading(false)
-    setIsZooming(false)
+  }
+
+  // Check for speech recognition support
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      setSpeechSupported(true)
+    }
+  }, [])
+
+  // Handle speech recognition
+  const handleSpeechRecognition = () => {
+    if (!speechSupported) {
+      alert('Speech recognition is not supported in this browser')
+      return
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    const recognition = new SpeechRecognition()
+    
+    recognition.continuous = false
+    recognition.interimResults = false
+    recognition.lang = 'en-US'
+
+    recognition.onstart = () => {
+      setIsListening(true)
+    }
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript
+      setSearchQuery(transcript)
+      setShowSuggestions(true)
+      handleSearch(transcript)
+    }
+
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error)
+      setIsListening(false)
+    }
+
+    recognition.onend = () => {
+      setIsListening(false)
+    }
+
+    recognition.start()
   }
 
   // Main Content***/
   return (
     <>
       <style jsx>{`
-        @keyframes quickZoom {
-          0% {
-            transform: scale(0.1);
-            opacity: 0;
-          }
-          100% {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-        
-        @keyframes fullScreenZoom {
-          0% {
-            transform: scale(1);
-            opacity: 1;
-          }
-          50% {
-            transform: scale(15);
-            opacity: 0.8;
-          }
-          100% {
-            transform: scale(30);
-            opacity: 0;
-          }
-        }
       `}</style>
       <div className="min-h-full bg-black">
       {/* Focused Search Overlay */}
-      {(isSearchFocused || isLoading || isZooming) && (
+      {(isSearchFocused || isLoading) && (
         <div className="fixed inset-0 bg-black z-40 flex items-center justify-center overflow-hidden">
           <div className="w-full max-w-4xl mx-auto px-4">
             {/* Exit Arrow */}
@@ -248,29 +264,6 @@ const Home = () => {
               </div>
             )}
             
-            {/* Zooming Animation */}
-            {isZooming && (
-              <div className="text-center relative">
-                {/* Quick Zoom Effect */}
-                <div 
-                  className="rounded-full h-16 w-16 border-b-2 border-white mx-auto mb-4"
-                  style={{
-                    animation: 'quickZoom 0.2s ease-out forwards'
-                  }}
-                ></div>
-                <p className="text-white text-lg">Loading...</p>
-                
-                {/* Full Screen Zoom Effect */}
-                <div 
-                  className="absolute inset-0 flex items-center justify-center"
-                  style={{
-                    animation: 'fullScreenZoom 0.4s ease-out 0.1s forwards'
-                  }}
-                >
-                  <div className="rounded-full h-16 w-16 border-b-2 border-white"></div>
-                </div>
-              </div>
-            )}
             
             {/* Focused Search Interface */}
             {isSearchFocused && (
@@ -318,9 +311,17 @@ const Home = () => {
                       {/* Microphone Icon */}
                       <button
                         type="button"
-                        className="w-8 h-8 flex items-center justify-center hover:bg-gray-700/50 rounded-full transition-colors"
+                        onClick={handleSpeechRecognition}
+                        disabled={!speechSupported}
+                        className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
+                          isListening 
+                            ? 'bg-red-500/50 hover:bg-red-600/50' 
+                            : speechSupported 
+                              ? 'hover:bg-gray-700/50' 
+                              : 'opacity-50 cursor-not-allowed'
+                        }`}
                       >
-                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className={`w-5 h-5 ${isListening ? 'text-red-400' : 'text-white'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                         </svg>
                       </button>
@@ -476,9 +477,17 @@ const Home = () => {
                       {/* Microphone Icon */}
                       <button
                         type="button"
-                        className="w-8 h-8 flex items-center justify-center hover:bg-gray-700/50 rounded-full transition-colors"
+                        onClick={handleSpeechRecognition}
+                        disabled={!speechSupported}
+                        className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
+                          isListening 
+                            ? 'bg-red-500/50 hover:bg-red-600/50' 
+                            : speechSupported 
+                              ? 'hover:bg-gray-700/50' 
+                              : 'opacity-50 cursor-not-allowed'
+                        }`}
                       >
-                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className={`w-5 h-5 ${isListening ? 'text-red-400' : 'text-white'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                         </svg>
                       </button>
