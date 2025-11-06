@@ -1,6 +1,6 @@
-# Mini-Project-MCP-store-
-Frontend of the page with additional utilities
-this is the structure of the frontend
+# Mini-Project-MCP-store- <br>
+Frontend of the page with additional utilities <br>
+this is the structure of the frontend <br>
 mcp-frontend/
 ├─ package.json
 ├─ postcss.config.cjs
