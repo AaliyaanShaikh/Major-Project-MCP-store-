@@ -1,0 +1,15 @@
+Deploy this repo on Vercel (required steps)
+
+1) Vercel dashboard → your Project → Settings → General
+   Set "Root Directory" to: mcp-frontend
+   (Click Edit, type mcp-frontend, Save.)
+
+2) Settings → Build and Deployment → Build Settings
+   - Framework Preset: Next.js (or leave on Auto)
+   - Build Command: leave default OR npm run build
+   - Output Directory: must be EMPTY — delete "public" if it appears
+   - Install Command: leave default OR npm ci
+
+3) Save, then Deployments → Redeploy the latest commit (or push to Git).
+
+If it still fails, open the failed deployment → Build Logs and copy the first error lines.
