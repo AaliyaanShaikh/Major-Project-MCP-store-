@@ -57,6 +57,7 @@ const Home = () => {
   
   // Search functionality state
   const [searchQuery, setSearchQuery] = useState('')
+  const [activeQuery, setActiveQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [isSearching, setIsSearching] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
@@ -166,13 +167,23 @@ const Home = () => {
     setShowSuggestions(value.length > 0)
   }
 
+  // Live API search — passed to ServerList
+  const runLiveSearch = () => {
+    const q = searchQuery.trim()
+    if (q) setActiveQuery(q)
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      runLiveSearch()
+    }
+  }
+
   // Handle search submission
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (searchQuery.trim()) {
-      // In a real app, this would trigger a more comprehensive search
-      console.log('Searching for:', searchQuery)
-    }
+    runLiveSearch()
   }
 
   // Handle entering focused search mode
@@ -222,6 +233,7 @@ const Home = () => {
       setSearchQuery(transcript)
       setShowSuggestions(true)
       handleSearch(transcript)
+      if (transcript.trim()) setActiveQuery(transcript.trim())
     }
 
     recognition.onerror = (event) => {
@@ -290,6 +302,7 @@ const Home = () => {
                       type="text"
                       value={searchQuery}
                       onChange={handleInputChange}
+                      onKeyDown={handleKeyDown}
                       placeholder="Ask anything"
                       className="w-full px-6 py-4 pl-16 pr-20 bg-gray-800/50 border border-gray-700/50 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600/50 focus:border-transparent backdrop-blur-sm text-lg"
                     />
@@ -339,6 +352,16 @@ const Home = () => {
                   </div>
                 </form>
 
+                <div className="flex gap-2 mt-4 justify-center">
+                  <button
+                    type="button"
+                    onClick={runLiveSearch}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Search
+                  </button>
+                </div>
+
                 {/* Search Suggestions Dropdown */}
                 {showSuggestions && searchResults.length > 0 && (
                   <div className="absolute top-full left-0 right-0 mt-2 bg-gray-800/90 backdrop-blur-sm border border-gray-700/50 rounded-xl shadow-2xl z-50 max-h-96 overflow-y-auto">
@@ -349,6 +372,7 @@ const Home = () => {
                         onClick={() => {
                           setSearchQuery(tool.name)
                           setShowSuggestions(false)
+                          setActiveQuery(tool.name)
                         }}
                       >
                         <div className="flex items-center justify-between">
@@ -411,6 +435,7 @@ const Home = () => {
                         setSearchQuery(category)
                         handleSearch(category)
                         setShowSuggestions(true)
+                        setActiveQuery(category)
                       }}
                       className="px-4 py-2 bg-gray-800/50 text-gray-300 rounded-full text-sm hover:bg-gray-700/50 transition-colors border border-gray-700/30"
                     >
@@ -456,6 +481,7 @@ const Home = () => {
                       type="text"
                       value={searchQuery}
                       onChange={handleInputChange}
+                      onKeyDown={handleKeyDown}
                       placeholder="Ask anything"
                       className="w-full px-6 py-4 pl-16 pr-20 bg-gray-800/50 border border-gray-700/50 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-600/50 focus:border-transparent backdrop-blur-sm text-lg"
                     />
@@ -505,6 +531,19 @@ const Home = () => {
                   </div>
                 </form>
 
+                <div
+                  className="flex gap-2 mt-4 justify-center"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    type="button"
+                    onClick={runLiveSearch}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Search
+                  </button>
+                </div>
+
                 {/* Search Suggestions Dropdown */}
                 {showSuggestions && searchResults.length > 0 && (
                   <div className="absolute top-full left-0 right-0 mt-2 bg-gray-800/90 backdrop-blur-sm border border-gray-700/50 rounded-xl shadow-2xl z-50 max-h-96 overflow-y-auto">
@@ -512,9 +551,11 @@ const Home = () => {
                       <div
                         key={tool.id}
                         className="p-4 hover:bg-gray-700/50 cursor-pointer border-b border-gray-700/30 last:border-b-0 transition-colors"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation()
                           setSearchQuery(tool.name)
                           setShowSuggestions(false)
+                          setActiveQuery(tool.name)
                         }}
                       >
                         <div className="flex items-center justify-between">
@@ -577,6 +618,7 @@ const Home = () => {
                         setSearchQuery(category)
                         handleSearch(category)
                         setShowSuggestions(true)
+                        setActiveQuery(category)
                       }}
                       className="px-4 py-2 bg-gray-800/50 text-gray-300 rounded-full text-sm hover:bg-gray-700/50 transition-colors border border-gray-700/30"
                     >
@@ -586,6 +628,16 @@ const Home = () => {
                 </div>
               </div>
             </div>
+
+            {/* Live API search results */}
+            {activeQuery ? (
+              <div className="w-full max-w-7xl mx-auto mt-8 mb-16 text-left">
+                <h3 className="text-lg font-semibold text-gray-300 mb-4 text-center">
+                  Search results
+                </h3>
+                <ServerList searchQuery={activeQuery} />
+              </div>
+            ) : null}
             
             {/* Get Started and Learn More Buttons */}
             {/*
