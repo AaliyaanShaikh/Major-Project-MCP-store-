@@ -139,6 +139,27 @@ const Home = () => {
     { id: 10, name: 'Email Service', description: 'Send and receive emails through AI agents', category: 'Communication', status: 'online', uptime: '99.2%' }
   ]
 
+  const featuredTools = [
+    { icon: '🔧', title: 'GitHub Integration', description: 'Connect AI agents with GitHub repositories, issues, and pull requests', status: 'Online', statusKind: 'online', uptime: '99.8% uptime' },
+    { icon: '📊', title: 'Data Analytics', description: 'Advanced data processing and visualization tools for AI agents', status: 'Online', statusKind: 'online', uptime: '99.9% uptime' },
+    { icon: '🤖', title: 'AI Assistant', description: 'Intelligent task automation and workflow optimization', status: 'Maintenance', statusKind: 'maintenance', uptime: '98.5% uptime' },
+    { icon: '🔒', title: 'Security Suite', description: 'Advanced security monitoring and threat detection', status: 'Offline', statusKind: 'offline', uptime: '95.2% uptime' },
+    { icon: '☁️', title: 'Cloud Storage', description: 'Seamless file management and cloud integration', status: 'Online', statusKind: 'online', uptime: '99.7% uptime' },
+    { icon: '💬', title: 'Communication', description: 'Multi-channel messaging and notification systems', status: 'Online', statusKind: 'online', uptime: '99.6% uptime' }
+  ]
+
+  const featureHighlights = [
+    { n: '01', icon: '🚀', title: 'Fast Deployment', body: 'Deploy your applications quickly and efficiently with our optimized infrastructure' },
+    { n: '02', icon: '📊', title: 'Real-time Monitoring', body: 'Monitor your servers with real-time analytics and comprehensive dashboards' },
+    { n: '03', icon: '🔒', title: 'Secure & Reliable', body: 'Enterprise-grade security and reliability with 99.9% uptime guarantee' }
+  ]
+
+  const statusTone = {
+    online: 'text-emerald-400/90',
+    maintenance: 'text-amber-400/90',
+    offline: 'text-red-400/85'
+  }
+
   // Search functionality
   const handleSearch = (query) => {
     setSearchQuery(query)
@@ -658,219 +679,107 @@ const Home = () => {
             */}
           </div>
 
-          {/* MCP Tools Store Section */}
-          <div className="text-center mb-16 mt-48">
-            <div className="inline-flex items-center gap-2 mb-4">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-green-400 text-sm font-medium">LIVE</span>
-            </div>
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              MCP Tools Marketplace
-            </h2>
-            <p className="text-xl text-gray-300 mb-8">Discover and connect with powerful AI tools</p>
-            
-            {/* Stats Bar with Counting Animation */}
-            <div className="flex justify-center items-center gap-8 mb-12">
-              <div className="text-center" ref={toolsCount.ref}>
-                <div className="text-2xl font-bold text-white">
-                  {toolsCount.count}+
+          {/* MCP Tools Store — minimal AI-inspired */}
+          <div className="relative mb-20 mt-48 overflow-hidden rounded-2xl border border-white/[0.08] bg-zinc-950/40">
+            <div className="pointer-events-none absolute inset-0 ai-section-grid opacity-60" />
+            <div className="relative px-6 py-16 sm:px-10 sm:py-20">
+              <div className="mx-auto max-w-3xl text-center">
+                <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-zinc-400">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/40 opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+                  </span>
+                  Live
                 </div>
-                <div className="text-sm text-gray-400">Available Tools</div>
-              </div>
-              <div className="w-px h-8 bg-gray-700"></div>
-              <div className="text-center" ref={uptimeCount.ref}>
-                <div className="text-2xl font-bold text-white">
-                  {uptimeCount.count.toFixed(1)}%
-                </div>
-                <div className="text-sm text-gray-400">Uptime</div>
-              </div>
-              <div className="w-px h-8 bg-gray-700"></div>
-              <div className="text-center" ref={supportCount.ref}>
-                <div className="text-2xl font-bold text-white">
-                  {supportCount.count}/7
-                </div>
-                <div className="text-sm text-gray-400">Support</div>
-              </div>
-            </div>
-          </div>
+                <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl md:text-[2.5rem]">
+                  MCP Tools Marketplace
+                </h2>
+                <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-zinc-500 sm:text-base">
+                  Discover and connect with powerful AI tools
+                </p>
 
-          {/* Featured MCP Tools */}
-          <div className="mb-20">
-            <div className="text-center mb-12">
-              <h3 className="text-2xl font-bold text-white mb-4">Featured MCP Tools</h3>
-              <p className="text-gray-400">Handpicked tools for maximum productivity</p>
-            </div>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {/* Tool Card 1 */}
-              <div className="group relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-blue-500 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20">
-                <div className="absolute top-4 right-4">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                </div>
-                <div className="mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mb-3">
-                    <span className="text-2xl">🔧</span>
+                <div className="mx-auto mt-12 grid max-w-2xl grid-cols-3 divide-x divide-white/[0.08] rounded-xl border border-white/[0.08] bg-black/30 font-mono backdrop-blur-sm">
+                  <div className="px-3 py-5 text-center sm:px-6" ref={toolsCount.ref}>
+                    <div className="text-xl font-medium tabular-nums text-white sm:text-2xl">{toolsCount.count}+</div>
+                    <div className="mt-1 text-[10px] uppercase tracking-wider text-zinc-500 sm:text-xs">Available Tools</div>
                   </div>
-                  <h4 className="text-xl font-bold text-white mb-2">GitHub Integration</h4>
-                  <p className="text-gray-400 text-sm">Connect AI agents with GitHub repositories, issues, and pull requests</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-green-400 text-sm font-medium">Online</span>
-                    <span className="text-gray-500 text-xs">•</span>
-                    <span className="text-gray-400 text-xs">99.8% uptime</span>
+                  <div className="px-3 py-5 text-center sm:px-6" ref={uptimeCount.ref}>
+                    <div className="text-xl font-medium tabular-nums text-white sm:text-2xl">{uptimeCount.count.toFixed(1)}%</div>
+                    <div className="mt-1 text-[10px] uppercase tracking-wider text-zinc-500 sm:text-xs">Uptime</div>
                   </div>
-                  <button className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:from-blue-600 hover:to-purple-700 transition-all duration-200">
-                    Connect
-                  </button>
+                  <div className="px-3 py-5 text-center sm:px-6" ref={supportCount.ref}>
+                    <div className="text-xl font-medium tabular-nums text-white sm:text-2xl">{supportCount.count}/7</div>
+                    <div className="mt-1 text-[10px] uppercase tracking-wider text-zinc-500 sm:text-xs">Support</div>
+                  </div>
                 </div>
               </div>
 
-              {/* Tool Card 2 */}
-              <div className="group relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-green-500 transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/20">
-                <div className="absolute top-4 right-4">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <div className="mx-auto mt-20 max-w-6xl border-t border-white/[0.06] pt-16">
+                <div className="mb-10 text-center">
+                  <p className="font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-zinc-500">Featured</p>
+                  <h3 className="mt-2 text-2xl font-semibold tracking-tight text-white">Featured MCP Tools</h3>
+                  <p className="mx-auto mt-2 max-w-md text-sm text-zinc-500">Handpicked tools for maximum productivity</p>
                 </div>
-                <div className="mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-xl flex items-center justify-center mb-3">
-                    <span className="text-2xl">📊</span>
-                  </div>
-                  <h4 className="text-xl font-bold text-white mb-2">Data Analytics</h4>
-                  <p className="text-gray-400 text-sm">Advanced data processing and visualization tools for AI agents</p>
+
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {featuredTools.map((tool) => (
+                    <div
+                      key={tool.title}
+                      className="group flex flex-col rounded-xl border border-white/[0.08] bg-black/20 p-5 transition hover:border-white/20 hover:bg-white/[0.02]"
+                    >
+                      <div className="mb-4 flex items-start justify-between gap-3">
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-xl">
+                          {tool.icon}
+                        </div>
+                        <span
+                          className={`font-mono text-[10px] uppercase tracking-wider ${statusTone[tool.statusKind]}`}
+                        >
+                          {tool.status}
+                        </span>
+                      </div>
+                      <h4 className="text-base font-semibold tracking-tight text-white">{tool.title}</h4>
+                      <p className="mt-2 flex-1 text-sm leading-relaxed text-zinc-500">{tool.description}</p>
+                      <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/[0.06] pt-4">
+                        <p className="font-mono text-xs text-zinc-500">
+                          <span className="text-zinc-600">●</span> {tool.uptime}
+                        </p>
+                        <button
+                          type="button"
+                          className="rounded-md border border-white/15 px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-zinc-300 transition hover:border-white/30 hover:bg-white hover:text-black"
+                        >
+                          Connect
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-green-400 text-sm font-medium">Online</span>
-                    <span className="text-gray-500 text-xs">•</span>
-                    <span className="text-gray-400 text-xs">99.9% uptime</span>
-                  </div>
-                  <button className="px-4 py-2 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-lg text-sm font-medium hover:from-green-600 hover:to-teal-700 transition-all duration-200">
-                    Connect
-                  </button>
+
+                <div className="mt-12 text-center">
+                  <Link
+                    to="/resources"
+                    className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-transparent px-6 py-2.5 font-mono text-xs uppercase tracking-wider text-zinc-300 transition hover:border-white/25 hover:bg-white/[0.05] hover:text-white"
+                  >
+                    View All 150+ Tools
+                    <span aria-hidden className="text-zinc-500">→</span>
+                  </Link>
                 </div>
               </div>
 
-              {/* Tool Card 3 */}
-              <div className="group relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-yellow-500 transition-all duration-300 hover:shadow-2xl hover:shadow-yellow-500/20">
-                <div className="absolute top-4 right-4">
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
-                </div>
-                <div className="mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center mb-3">
-                    <span className="text-2xl">🤖</span>
-                  </div>
-                  <h4 className="text-xl font-bold text-white mb-2">AI Assistant</h4>
-                  <p className="text-gray-400 text-sm">Intelligent task automation and workflow optimization</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-yellow-400 text-sm font-medium">Maintenance</span>
-                    <span className="text-gray-500 text-xs">•</span>
-                    <span className="text-gray-400 text-xs">98.5% uptime</span>
-                  </div>
-                  <button className="px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg text-sm font-medium hover:from-yellow-600 hover:to-orange-700 transition-all duration-200">
-                    Connect
-                  </button>
+              <div className="mx-auto mt-20 max-w-6xl border-t border-white/[0.06] pt-16">
+                <div className="grid gap-4 md:grid-cols-3">
+                  {featureHighlights.map((f) => (
+                    <div
+                      key={f.n}
+                      className="relative rounded-xl border border-white/[0.06] bg-black/25 p-6 text-left transition hover:border-white/12"
+                    >
+                      <span className="font-mono text-[10px] text-zinc-600">{f.n}</span>
+                      <div className="mt-3 text-2xl">{f.icon}</div>
+                      <h3 className="mt-3 text-base font-semibold text-white">{f.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-zinc-500">{f.body}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
-
-              {/* Tool Card 4 */}
-              <div className="group relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-purple-500 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20">
-                <div className="absolute top-4 right-4">
-                  <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                </div>
-                <div className="mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-3">
-                    <span className="text-2xl">🔒</span>
-                  </div>
-                  <h4 className="text-xl font-bold text-white mb-2">Security Suite</h4>
-                  <p className="text-gray-400 text-sm">Advanced security monitoring and threat detection</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-red-400 text-sm font-medium">Offline</span>
-                    <span className="text-gray-500 text-xs">•</span>
-                    <span className="text-gray-400 text-xs">95.2% uptime</span>
-                  </div>
-                  <button className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg text-sm font-medium hover:from-purple-600 hover:to-pink-700 transition-all duration-200">
-                    Connect
-                  </button>
-                </div>
-              </div>
-
-              {/* Tool Card 5 */}
-              <div className="group relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-cyan-500 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
-                <div className="absolute top-4 right-4">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                </div>
-                <div className="mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center mb-3">
-                    <span className="text-2xl">☁️</span>
-                  </div>
-                  <h4 className="text-xl font-bold text-white mb-2">Cloud Storage</h4>
-                  <p className="text-gray-400 text-sm">Seamless file management and cloud integration</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-green-400 text-sm font-medium">Online</span>
-                    <span className="text-gray-500 text-xs">•</span>
-                    <span className="text-gray-400 text-xs">99.7% uptime</span>
-                  </div>
-                  <button className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg text-sm font-medium hover:from-cyan-600 hover:to-blue-700 transition-all duration-200">
-                    Connect
-                  </button>
-                </div>
-              </div>
-
-              {/* Tool Card 6 */}
-              <div className="group relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 border border-gray-700 hover:border-pink-500 transition-all duration-300 hover:shadow-2xl hover:shadow-pink-500/20">
-                <div className="absolute top-4 right-4">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                </div>
-                <div className="mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-600 rounded-xl flex items-center justify-center mb-3">
-                    <span className="text-2xl">💬</span>
-                  </div>
-                  <h4 className="text-xl font-bold text-white mb-2">Communication</h4>
-                  <p className="text-gray-400 text-sm">Multi-channel messaging and notification systems</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-green-400 text-sm font-medium">Online</span>
-                    <span className="text-gray-500 text-xs">•</span>
-                    <span className="text-gray-400 text-xs">99.6% uptime</span>
-                  </div>
-                  <button className="px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-lg text-sm font-medium hover:from-pink-600 hover:to-rose-700 transition-all duration-200">
-                    Connect
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* View All Tools Button */}
-            <div className="text-center mt-12">
-              <Link to="/resources" className="inline-block px-8 py-3 bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-xl hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl border border-gray-600/30">
-                View All 150+ Tools
-              </Link>
-            </div>
-          </div>
-
-          {/* Features Section */}
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-8 bg-gray-900 rounded-xl shadow-2xl border border-gray-800 hover:border-gray-700 transition-all duration-300">
-              <div className="text-4xl mb-4">🚀</div>
-              <h3 className="text-xl font-semibold mb-3 text-white">Fast Deployment</h3>
-              <p className="text-gray-400">Deploy your applications quickly and efficiently with our optimized infrastructure</p>
-            </div>
-            <div className="text-center p-8 bg-gray-900 rounded-xl shadow-2xl border border-gray-800 hover:border-gray-700 transition-all duration-300">
-              <div className="text-4xl mb-4">📊</div>
-              <h3 className="text-xl font-semibold mb-3 text-white">Real-time Monitoring</h3>
-              <p className="text-gray-400">Monitor your servers with real-time analytics and comprehensive dashboards</p>
-            </div>
-            <div className="text-center p-8 bg-gray-900 rounded-xl shadow-2xl border border-gray-800 hover:border-gray-700 transition-all duration-300">
-              <div className="text-4xl mb-4">🔒</div>
-              <h3 className="text-xl font-semibold mb-3 text-white">Secure & Reliable</h3>
-              <p className="text-gray-400">Enterprise-grade security and reliability with 99.9% uptime guarantee</p>
             </div>
           </div>
         </div>

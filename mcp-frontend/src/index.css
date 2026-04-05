@@ -73,3 +73,43 @@ code {
     transform: scale(1);
   }
 }
+
+/* ChatGPT-style intro: three flipping dots (row), monochrome */
+@keyframes mcp-dot-flip {
+  0%,
+  100% {
+    transform: rotateY(0deg);
+    opacity: 0.35;
+  }
+  50% {
+    transform: rotateY(180deg);
+    opacity: 1;
+  }
+}
+
+.mcp-intro-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: #fff;
+  animation: mcp-dot-flip 0.95s ease-in-out infinite;
+  transform-style: preserve-3d;
+  perspective: 80px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mcp-intro-dot {
+    animation: none;
+    opacity: 0.85;
+  }
+}
+
+/* Minimal AI-style section backdrop */
+.ai-section-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom, black 0%, black 70%, transparent 100%);
+}

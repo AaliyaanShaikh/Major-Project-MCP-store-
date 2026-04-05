@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
+import IntroOverlay from './components/IntroOverlay'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -44,8 +46,13 @@ function AppContent() {
 }
 
 function App() {
+  const [showIntro, setShowIntro] = useState(true)
+
   return (
     <Router>
+      {showIntro && (
+        <IntroOverlay onComplete={() => setShowIntro(false)} />
+      )}
       <AppContent />
     </Router>
   )
