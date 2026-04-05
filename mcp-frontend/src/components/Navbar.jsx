@@ -1,19 +1,22 @@
-import { Link, useLocation } from 'react-router-dom'
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
-  const location = useLocation()
+  const pathname = usePathname()
 
-  const isActive = (path) => location.pathname === path
+  const isActive = (path) => pathname === path
 
   // Page transition animation
   useEffect(() => {
     setIsAnimating(true)
     const timer = setTimeout(() => setIsAnimating(false), 300)
     return () => clearTimeout(timer)
-  }, [location.pathname])
+  }, [pathname])
 
   const navItems = [
     { name: 'Home', path: '/' },
@@ -24,15 +27,15 @@ const Navbar = () => {
 
   return (
     <nav className={`transition-all duration-500 ${
-      location.pathname === '/info' || location.pathname === '/contact'
+      pathname === '/info' || pathname === '/contact'
         ? 'bg-white shadow-lg border-b border-gray-200' 
         : 'bg-black shadow-2xl'
     } ${isAnimating ? 'scale-105 opacity-90' : 'scale-100 opacity-100'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center">
-              <span className={`text-2xl font-bold ${location.pathname === '/info' || location.pathname === '/contact' ? 'text-gray-900' : 'text-white'}`}>MCP Store</span>
+            <Link href="/" className="flex-shrink-0 flex items-center">
+              <span className={`text-2xl font-bold ${pathname === '/info' || pathname === '/contact' ? 'text-gray-900' : 'text-white'}`}>MCP Store</span>
             </Link>
           </div>
 
@@ -41,13 +44,13 @@ const Navbar = () => {
             {navItems.map((item) => (
               <Link
                 key={item.name}
-                to={item.path}
+                href={item.path}
                     className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
                       isActive(item.path)
-                        ? location.pathname === '/info' || location.pathname === '/contact'
+                        ? pathname === '/info' || pathname === '/contact'
                           ? 'text-gray-900 bg-gray-100 shadow-lg'
                           : 'text-white bg-gray-800 shadow-lg'
-                        : location.pathname === '/info' || location.pathname === '/contact'
+                        : pathname === '/info' || pathname === '/contact'
                           ? 'text-gray-600'
                           : 'text-gray-300'
                     }`}
@@ -60,9 +63,9 @@ const Navbar = () => {
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
                 <Link
-                  to="/login"
+                  href="/login"
                   className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                    location.pathname === '/info' || location.pathname === '/contact'
+                    pathname === '/info' || pathname === '/contact'
                       ? 'text-gray-600'
                       : 'text-gray-300'
                   }`}
@@ -70,11 +73,11 @@ const Navbar = () => {
                   Login
                 </Link>
                 <Link
-                  to="/sign"
+                  href="/sign"
                   className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-300 shadow-lg ${
-                    location.pathname === '/info' || location.pathname === '/contact'
+                    pathname === '/info' || pathname === '/contact'
                       ? 'bg-gray-800 text-white'
-                      : location.pathname === '/login' || location.pathname === '/sign'
+                      : pathname === '/login' || pathname === '/sign'
                         ? 'bg-white text-gray-900 border border-gray-300'
                         : 'bg-blue-600 text-white'
                   }`}
@@ -88,7 +91,7 @@ const Navbar = () => {
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
                   className={`inline-flex items-center justify-center p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-inset transition-all duration-300 ${
-                    location.pathname === '/info' || location.pathname === '/contact'
+                    pathname === '/info' || pathname === '/contact'
                       ? 'text-gray-600 focus:ring-gray-300'
                       : 'text-gray-300 focus:ring-gray-600'
                   }`}
@@ -112,20 +115,20 @@ const Navbar = () => {
       {isMenuOpen && (
             <div className="md:hidden">
               <div className={`px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t transition-all duration-500 ${
-                location.pathname === '/info' || location.pathname === '/contact'
+                pathname === '/info' || pathname === '/contact'
                   ? 'bg-white border-gray-200' 
                   : 'bg-black border-gray-800'
               }`}>
             {navItems.map((item) => (
               <Link
                 key={item.name}
-                to={item.path}
+                href={item.path}
                 className={`block px-4 py-3 rounded-lg text-base font-semibold transition-all duration-300 ${
                   isActive(item.path)
-                    ? location.pathname === '/info' || location.pathname === '/contact'
+                    ? pathname === '/info' || pathname === '/contact'
                       ? 'text-gray-900 bg-gray-100 shadow-lg'
                       : 'text-white bg-gray-800 shadow-lg'
-                    : location.pathname === '/info' || location.pathname === '/contact'
+                    : pathname === '/info' || pathname === '/contact'
                       ? 'text-gray-600'
                       : 'text-gray-300'
                 }`}
@@ -135,13 +138,13 @@ const Navbar = () => {
               </Link>
             ))}
                 <div className={`pt-4 pb-3 border-t ${
-                  location.pathname === '/info' || location.pathname === '/contact' ? 'border-gray-200' : 'border-gray-800'
+                  pathname === '/info' || pathname === '/contact' ? 'border-gray-200' : 'border-gray-800'
                 }`}>
                   <div className="flex items-center px-3 space-x-3">
                     <Link
-                      to="/login"
+                      href="/login"
                       className={`px-4 py-2 rounded-lg text-base font-semibold transition-all duration-300 ${
-                        location.pathname === '/info' || location.pathname === '/contact'
+                        pathname === '/info' || pathname === '/contact'
                           ? 'text-gray-600'
                           : 'text-gray-300'
                       }`}
@@ -150,11 +153,11 @@ const Navbar = () => {
                       Login
                     </Link>
                     <Link
-                      to="/sign"
+                      href="/sign"
                       className={`px-6 py-2 rounded-lg text-base font-semibold transition-all duration-300 shadow-lg ${
-                        location.pathname === '/info' || location.pathname === '/contact'
+                        pathname === '/info' || pathname === '/contact'
                           ? 'bg-gray-800 text-white'
-                          : location.pathname === '/login' || location.pathname === '/sign'
+                          : pathname === '/login' || pathname === '/sign'
                             ? 'bg-white text-gray-900 border border-gray-300'
                             : 'bg-blue-600 text-white'
                       }`}

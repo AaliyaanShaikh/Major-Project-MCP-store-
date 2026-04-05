@@ -1,19 +1,20 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+'use client'
 
-const Sign = () => {
+import { useState } from 'react'
+import Link from 'next/link'
+
+const Login = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    rememberMe: false
   })
 
   const handleChange = (e) => {
+    const { name, value, type, checked } = e.target
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: type === 'checkbox' ? checked : value
     })
   }
 
@@ -21,6 +22,11 @@ const Sign = () => {
     e.preventDefault()
     // Handle form submission here
     console.log('Form submitted:', formData)
+  }
+
+  const handleGoogleLogin = () => {
+    // Handle Google login here
+    console.log('Google login clicked')
   }
 
   return (
@@ -37,62 +43,30 @@ const Sign = () => {
       <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md">
         {/* Header */}
         <div className="text-left mb-8">
-          <div className="flex items-center gap-8 mb-4">
+          <div className="flex items-center gap-12 mb-4">
             <div className="w-16 h-16 bg-gradient-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center shadow-lg">
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
             <div className="flex-1">
               <h2 className="text-4xl font-bold text-white">
-                Create Account
+                Welcome Back
               </h2>
               <p className="text-xl text-gray-300">
-                Join MCP Store today
+                Sign in to your MCP Store account
               </p>
             </div>
           </div>
         </div>
 
-        {/* Sign Up Form */}
+        {/* Login Form */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl p-8">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="firstName" className="block text-sm font-semibold text-white mb-2">
-                  First name
-                </label>
-                <input
-                  id="firstName"
-                  name="firstName"
-                  type="text"
-                  required
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all duration-300"
-                  placeholder="Enter first name"
-                />
-              </div>
-              <div>
-                <label htmlFor="lastName" className="block text-sm font-semibold text-white mb-2">
-                  Last name
-                </label>
-                <input
-                  id="lastName"
-                  name="lastName"
-                  type="text"
-                  required
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all duration-300"
-                  placeholder="Enter last name"
-                />
-              </div>
-            </div>
-
+            {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-white mb-2">
-                Email address
+                Email Address
               </label>
               <div className="relative">
                 <input
@@ -114,7 +88,7 @@ const Sign = () => {
               </div>
             </div>
 
-
+            {/* Password Field */}
             <div>
               <label htmlFor="password" className="block text-sm font-semibold text-white mb-2">
                 Password
@@ -124,7 +98,7 @@ const Sign = () => {
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="new-password"
+                  autoComplete="current-password"
                   required
                   value={formData.password}
                   onChange={handleChange}
@@ -139,36 +113,36 @@ const Sign = () => {
               </div>
             </div>
 
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-white mb-2">
-                Confirm password
-              </label>
-              <div className="relative">
+            {/* Remember Me & Forgot Password */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
                 <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={formData.confirmPassword}
+                  id="rememberMe"
+                  name="rememberMe"
+                  type="checkbox"
+                  checked={formData.rememberMe}
                   onChange={handleChange}
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent backdrop-blur-sm transition-all duration-300"
-                  placeholder="Confirm your password"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-white/30 rounded bg-white/10"
                 />
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                </div>
+                <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-300">
+                  Remember me
+                </label>
+              </div>
+
+              <div className="text-sm">
+                <a href="#" className="font-medium text-blue-400 hover:text-blue-300 transition-colors duration-200">
+                  Forgot password?
+                </a>
               </div>
             </div>
 
+            {/* Login Button */}
             <div>
               <button
                 type="submit"
                 className="w-full bg-gradient-to-r from-gray-800 to-gray-900 text-white py-3 px-4 rounded-xl font-semibold shadow-lg hover:from-gray-700 hover:to-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-transparent transition-all duration-300 transform hover:scale-105 border border-gray-600/30"
               >
-                Create Account
+                Sign In
               </button>
             </div>
 
@@ -182,11 +156,11 @@ const Sign = () => {
               </div>
             </div>
 
-            {/* Google Sign Up Button */}
+            {/* Google Login Button */}
             <div>
               <button
                 type="button"
-                onClick={() => console.log('Google sign up clicked')}
+                onClick={handleGoogleLogin}
                 className="w-full bg-white/10 border border-white/20 text-white py-3 px-4 rounded-xl font-semibold shadow-lg hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-transparent transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -204,9 +178,9 @@ const Sign = () => {
         {/* Footer Links */}
         <div className="mt-8 text-center">
           <p className="text-gray-400">
-            Already have an account?{' '}
-            <Link to="/login" className="font-semibold text-blue-400 hover:text-blue-300 transition-colors duration-200">
-              Sign in here
+            Don't have an account?{' '}
+            <Link href="/sign" className="font-semibold text-blue-400 hover:text-blue-300 transition-colors duration-200">
+              Sign up here
             </Link>
           </p>
         </div>
@@ -215,4 +189,4 @@ const Sign = () => {
   )
 }
 
-export default Sign
+export default Login

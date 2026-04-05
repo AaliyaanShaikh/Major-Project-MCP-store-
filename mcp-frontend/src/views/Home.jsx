@@ -1,7 +1,11 @@
-import { Link } from 'react-router-dom'
+'use client'
+
+import dynamic from 'next/dynamic'
+import Link from 'next/link'
 import ServerList from '../components/ServerList'
-import Spline from '@splinetool/react-spline/react'
 import { useEffect, useRef, useState } from 'react'
+
+const Spline = dynamic(() => import('@splinetool/react-spline'), { ssr: false })
 
 // Custom hook for counting animation
 const useCountUp = (end, duration = 2000, start = 0) => {
@@ -272,8 +276,6 @@ const Home = () => {
   // Main Content***/
   return (
     <>
-      <style jsx>{`
-      `}</style>
       <div className="min-h-full bg-black">
       {/* Focused Search Overlay */}
       {(isSearchFocused || isLoading) && (
@@ -664,13 +666,13 @@ const Home = () => {
             {/*
             <div className="flex gap-4 justify-center mb-22">
               <Link 
-                to="/sign" 
+                href="/sign" 
                 className="px-8 py-3 bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-xl hover:from-gray-700 hover:to-gray-800 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl border border-gray-600/30"
               >
                 Get Started
               </Link>
               <Link 
-                to="/info" 
+                href="/info" 
                 className="px-6 py-3 bg-gray-900/50 text-gray-300 border border-gray-700/50 rounded-xl hover:bg-gray-800/50 hover:text-white transition-all duration-200 font-semibold backdrop-blur-sm"
               >
                 Learn More
@@ -756,7 +758,7 @@ const Home = () => {
 
                 <div className="mt-12 text-center">
                   <Link
-                    to="/resources"
+                    href="/resources"
                     className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-transparent px-6 py-2.5 font-mono text-xs uppercase tracking-wider text-zinc-300 transition hover:border-white/25 hover:bg-white/[0.05] hover:text-white"
                   >
                     View All 150+ Tools

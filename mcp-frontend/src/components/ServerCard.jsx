@@ -1,3 +1,5 @@
+'use client'
+
 const ServerCard = ({ server }) => {
   const name = server.name ?? server.title ?? 'Untitled'
   const description =

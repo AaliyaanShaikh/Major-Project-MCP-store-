@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from 'react';
 import { semanticSearch, checkBackendHealth } from '../api/mcpApi';
 import ServerCard from './ServerCard';
