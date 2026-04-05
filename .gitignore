@@ -1,0 +1,16 @@
+# Dependencies (never commit)
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Build output
+dist/
+
+# Env
+.env
+.env*.local
+
+# OS
+.DS_Store
