@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "name": "major-project-mcp-store",
+  "version": "0.0.0",
+  "description": "Monorepo root. Next.js app is in mcp-frontend/.",
+  "workspaces": [
+    "mcp-frontend"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w mcp-frontend",
+    "build": "npm run build -w mcp-frontend",
+    "start": "npm run start -w mcp-frontend",
+    "lint": "npm run lint -w mcp-frontend"
+  },
+  "dependencies": {
+    "next": "^14.2.18",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  }
+}
