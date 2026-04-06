@@ -18,21 +18,28 @@ const ServerCard = ({ server }) => {
         : Number(rawScore) * 100
       : null
 
-  const tagList = Array.isArray(tags) ? tags : tags ? String(tags).split(/[;,]/).map((t) => t.trim()).filter(Boolean) : []
+  const tagList = Array.isArray(tags)
+    ? tags
+    : tags
+      ? String(tags)
+          .split(/[;,]/)
+          .map((t) => t.trim())
+          .filter(Boolean)
+      : []
 
   return (
-    <div className="p-4 rounded-xl border border-gray-700 bg-gray-900 hover:border-blue-500 transition">
-      <h3 className="text-white font-semibold text-lg">{name}</h3>
+    <div className="rounded-2xl border border-white/[0.08] bg-claude-surface/50 p-5 transition hover:border-white/[0.14] hover:bg-claude-surface/80">
+      <h3 className="font-medium text-neutral-100">{name}</h3>
       {displaySubtitle ? (
-        <p className="text-gray-400 text-sm mt-1 line-clamp-4">{displaySubtitle}</p>
+        <p className="mt-2 line-clamp-4 text-sm leading-relaxed text-neutral-500">{displaySubtitle}</p>
       ) : null}
 
       {tagList.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mt-2">
+        <div className="mt-3 flex flex-wrap gap-1.5">
           {tagList.map((tag, i) => (
             <span
               key={`${tag}-${i}`}
-              className="text-xs px-2 py-0.5 rounded-full bg-gray-800 text-gray-300 border border-gray-600"
+              className="rounded-full border border-white/[0.06] bg-claude-bg px-2 py-0.5 text-xs text-neutral-400"
             >
               {tag}
             </span>
@@ -45,15 +52,15 @@ const ServerCard = ({ server }) => {
           href={url}
           target="_blank"
           rel="noreferrer"
-          className="text-blue-400 text-sm mt-2 inline-block hover:underline"
+          className="mt-4 inline-block text-sm text-neutral-300 underline-offset-4 transition hover:text-white hover:underline"
         >
-          View Server →
+          View server →
         </a>
       )}
 
       {scorePercent != null && !Number.isNaN(scorePercent) && (
-        <span className="text-xs text-green-400 mt-2 block">
-          Match score: {scorePercent.toFixed(0)}%
+        <span className="mt-2 block text-xs text-neutral-500">
+          Match: {scorePercent.toFixed(0)}%
         </span>
       )}
     </div>

@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "npx next dev",
+    "dev:clean": "rm -rf .next && npx next dev",
     "build": "npx next build",
     "start": "npx next start",
     "lint": "npx next lint"

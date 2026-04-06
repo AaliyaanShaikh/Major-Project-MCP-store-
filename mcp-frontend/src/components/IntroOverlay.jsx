@@ -5,10 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 const FULL_TEXT = 'Welcome to MCP store'
 
-/**
- * ChatGPT-inspired intro: flipping dots → typewriter welcome → fade out.
- * Monochrome (black / white / gray).
- */
 function IntroOverlay({ onComplete }) {
   const [phase, setPhase] = useState('dots')
 
@@ -16,7 +12,6 @@ function IntroOverlay({ onComplete }) {
     onComplete?.()
   }, [onComplete])
 
-  // Dots phase → typing
   useEffect(() => {
     if (phase !== 'dots') return
     const id = setTimeout(() => setPhase('typing'), 2600)
@@ -25,12 +20,10 @@ function IntroOverlay({ onComplete }) {
 
   const [typed, setTyped] = useState('')
 
-  // Reset typed when entering typing
   useEffect(() => {
     if (phase === 'typing') setTyped('')
   }, [phase])
 
-  // Typewriter + hold → exit
   useEffect(() => {
     if (phase !== 'typing') return
 
@@ -45,7 +38,6 @@ function IntroOverlay({ onComplete }) {
     return () => clearTimeout(id)
   }, [phase, typed])
 
-  // Fade complete
   useEffect(() => {
     if (phase !== 'exit') return
     const id = setTimeout(finish, 620)
@@ -54,7 +46,7 @@ function IntroOverlay({ onComplete }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black px-6"
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-claude-bg px-6"
       role="presentation"
       aria-hidden="true"
       initial={{ opacity: 1 }}
@@ -83,22 +75,22 @@ function IntroOverlay({ onComplete }) {
         {(phase === 'typing' || phase === 'exit') && (
           <motion.div
             key="welcome"
-            className="text-center max-w-2xl"
+            className="max-w-2xl text-center font-medium"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, ease: 'easeOut' }}
           >
-            <p className="text-white text-2xl sm:text-3xl md:text-4xl font-medium tracking-tight leading-snug">
+            <p className="text-2xl leading-snug tracking-tight text-neutral-100 sm:text-3xl md:text-4xl">
               {typed}
               {phase === 'typing' && typed.length < FULL_TEXT.length && (
                 <span
-                  className="inline-block w-0.5 h-[1.05em] bg-white ml-0.5 align-middle animate-pulse"
+                  className="ml-0.5 inline-block h-[1.05em] w-0.5 animate-pulse bg-neutral-300 align-middle"
                   aria-hidden
                 />
               )}
               {phase === 'typing' && typed.length === FULL_TEXT.length && (
                 <span
-                  className="inline-block w-2.5 h-2.5 rounded-full bg-white ml-2 align-middle opacity-95"
+                  className="ml-2 inline-block h-2.5 w-2.5 rounded-full bg-neutral-300 align-middle opacity-95"
                   aria-hidden
                 />
               )}

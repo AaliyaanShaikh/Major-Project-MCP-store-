@@ -9,8 +9,15 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" className="h-full" suppressHydrationWarning>
+      <body
+        className="min-h-full bg-claude-bg text-neutral-200 antialiased"
+        style={{
+          backgroundColor: '#171717',
+          color: '#e5e5e5',
+          minHeight: '100vh',
+        }}
+      >
         <ClientShell>{children}</ClientShell>
       </body>
     </html>

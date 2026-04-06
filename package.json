@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "dev": "npm run dev -w mcp-frontend",
+    "dev:clean": "npm run dev:clean -w mcp-frontend",
     "build": "npm run build -w mcp-frontend",
     "start": "npm run start -w mcp-frontend",
     "lint": "npm run lint -w mcp-frontend"
