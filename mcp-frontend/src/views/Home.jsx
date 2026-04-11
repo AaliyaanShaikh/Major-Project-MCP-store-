@@ -171,7 +171,7 @@ const Home = () => {
 
                 <div className="flex items-center gap-2">
                   <span className="hidden rounded-lg border border-white/[0.08] bg-claude-bg/80 px-2.5 py-1.5 text-xs text-neutral-400 sm:inline">
-                    Semantic search
+                    RAG search
                     <span className="ml-1 text-neutral-600" aria-hidden>▾</span>
                   </span>
                   <button

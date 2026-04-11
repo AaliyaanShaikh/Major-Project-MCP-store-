@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { semanticSearch, checkBackendHealth } from '../api/mcpApi'
+import { ragAgentSearch, checkRagAgentHealth } from '../api/mcpApi'
 import ServerCard from './ServerCard'
 
 const ServerList = ({ searchQuery }) => {
@@ -10,7 +10,7 @@ const ServerList = ({ searchQuery }) => {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    checkBackendHealth().then(() => {})
+    checkRagAgentHealth().then(() => {})
   }, [])
 
   useEffect(() => {
@@ -20,10 +20,15 @@ const ServerList = ({ searchQuery }) => {
       setLoading(true)
       setError(null)
       try {
-        const data = await semanticSearch(searchQuery)
-        setResults(data.results || data || [])
+        const items = await ragAgentSearch(searchQuery)
+        setResults(items)
       } catch (err) {
-        setError('Search failed. The backend may be starting up — please try again in 30 seconds.')
+        const detail = err?.response?.data?.message || err?.message
+        setError(
+          detail
+            ? `Search failed: ${detail}`
+            : 'Search failed. The RAG service may be waking up (first request can take a minute on free hosting) — try again shortly.',
+        )
       } finally {
         setLoading(false)
       }
@@ -33,7 +38,17 @@ const ServerList = ({ searchQuery }) => {
   }, [searchQuery])
 
   if (loading)
-    return <p className="text-center text-sm text-neutral-500">Searching…</p>
+    return (
+      <div className="mx-auto flex max-w-md flex-col items-center gap-3 px-4 py-8 text-center">
+        <span
+          className="h-9 w-9 animate-spin rounded-full border-2 border-white/15 border-t-neutral-300"
+          aria-hidden
+        />
+        <p className="text-sm leading-relaxed text-neutral-400">
+          Results come from the RAG agent at mcp-rag-agent.onrender.com — please wait.
+        </p>
+      </div>
+    )
   if (error) return <p className="text-center text-sm text-amber-500/90">{error}</p>
   if (results.length === 0)
     return <p className="text-center text-sm text-neutral-500">No results found.</p>
